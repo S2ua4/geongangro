@@ -127,7 +127,7 @@
 - 추후 추가 예정
 
 ## 5. 핵심 소스코드
-#### 5-1. 산악 안전 웨어려블 송신기 
+#### 5-1. 산악 안전 웨어러블 송신기 
 - 본 송신기 코드는 MAX30102·GPS 센서 데이터를 주기적으로 수집하여 LoRa 네트워크로 서버에 전송하며, SOS 버튼을 통해 긴급 구조 신호를 전송할 수 있도록 설계함
 ##### 1. 센서 데이터 수집 (MAX30102 + GPS)
 ```cpp
@@ -139,43 +139,7 @@ void readSensors() {
   }
 
   maxim_heart_rate_and_oxygen_saturation(
-    irBuffer, MY_BUFFER_SIZE, redBuffer,
-    &spo2, &validSpO2, &heartRate, &validHeartRate
-  );
-
-  if (!validHeartRate) heartRate = -1;
-  if (!validSpO2) spo2 = -1;
-}
-```
-##### 2. LoRa 데이터 전송
-- 수집한 데이터를 저전력 장거리 통신(LoRa)를 통하여 서버에 전송
-``` cpp
-bool sendDataViaLoRa(String payload) {
-  LoRa.beginPacket();
-  LoRa.print(payload);
-  return (LoRa.endPacket() == 0);
-}
-```
-##### 3. SOS 긴급 구조 요청
-- 사용자가 버튼을 3회 빠르게 눌러 긴급 구조 신호를 송신하는 부분
-``` cpp
-void triggerSOS() {
-  sosActive = true;
-  sosStartTime = millis();
-  sendSOSSignal();
-  displaySOS();
-}
-
-void sendSOSSignal() {
-  String payload = "SOS=1,Lat=" + String(gps.location.lat(), 6) +
-                   ",Lng=" + String(gps.location.lng(), 6);
-  LoRa.beginPacket();
-  LoRa.print(payload);
-  LoRa.endPacket();
-}
-```
-
-#### 5-2. 산악 안전 웨어려블 수신기
+    irBuffer,러블 수신기
 - 송신기가 보낸 데이터를 수신기가 받아 데이터베이스에 저장하는 역할
 ##### 1. LoRa 및 wi-fi 초기화
 - LoRa 수신기를 초기화하여 송신기로부터 데이터 패킷 수신
