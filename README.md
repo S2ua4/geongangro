@@ -65,6 +65,7 @@
 
 ## 🧩 3. 시스템 구성도
 #### 3-1. 서비스 구성도
+![service.png](https://github.com/S2ua4/geongangro/blob/main/readImage/service.png)
 - front-end
 	- 사용자 앱 : 위치·건강 확인, 수동 구조 요청, 경고 수신
 	- Node-RED 대시보드 : 지도 기반 실시간 모니터링·마커 색상 변화
@@ -76,14 +77,184 @@
 	- PostgreSQL를 이용하여 산악 지역의 지역·위치 데이터를 저장 및 백업
 
 #### 3-2. 기능 처리도 (기능 흐름도)
+// 이미지 하나 선택할 것!
+![flowchart](https://github.com/S2ua4/geongangro/blob/main/readImage/flowchart.png)
+![flowchart2](https://github.com/S2ua4/geongangro/blob/main/readImage/flowchart2.png)
+- 사용자 앱–관제실 서버–구조대 앱 간의 통신 과정을 LoRa·Wi-Fi 네트워크 기반으로 시각화한 서비스 아키텍쳐
 
 #### 3-3. 사용자 모바일 앱 메뉴 구성도
+![userMenu.jpg](https://github.com/S2ua4/geongangro/blob/main/readImage/secureMenu.jpg)
+
 #### 3-4. 구조대 모바일 앱 메뉴 구성도
-#### 3-5. 알고리즘 명세서
+![secureMenu.jpg](https://github.com/S2ua4/geongangro/blob/main/readImage/userMenu.jpg)
+
+#### 3-5. ERD
+![erd.jpg](https://github.com/S2ua4/geongangro/blob/main/readImage/erd.png)
+
+#### 3-6. 테이블 정의서
+- users Table
+![userTable.jpg](https://github.com/S2ua4/geongangro/blob/main/readImage/userTable.jpg)
+- rescuer Table
+![rescuerTable](https://github.com/S2ua4/geongangro/blob/main/readImage/rescueTable.jpg)
+- gpssLogs Table & healthLogs Table
+![logsTalbe](https://github.com/S2ua4/geongangro/blob/main/readImage/logsTable.jpg)
+- Mountain_locations Table & bukhansan_trails Table 
+![loactionTable](https://github.com/S2ua4/geongangro/blob/main/readImage/locationTable.jpg)
+
+#### 3-7. 구조 우선순위 판단 알고리즘 명세서
+![algorithm.png](https://github.com/S2ua4/geongangro/blob/main/readImage/algorithm.png)
+##### 시나리오 개요
+- 등산 중 3명의 사용자가 동시에 구조 요청을 보낸 상황을 가정합니다. 서버는 각 사용자의 심박수, 위치 데이터를 기반으로 위험 점수를 계산하여 구조 우선순위를 자동으로 산출합니다.
+- 서버는 계산된 위험 점수를 기반으로 구조 우선순위 리스트를 생성하고 이를 구조대 단말기에 전송하여 구조 진행 순서를 결정합니다.
+
+| 사용자 | 상태 요약 | 위험 점수 | 우선순위 |
+|:--|:--|:--|:--|
+| **이 대리** | 고심박(160bpm), GPS 이탈 6m, 3분 무반응 | +85점 | 1순위 |
+| **박 부장** | 심박 145bpm, GPS 이탈 8m, 2분 무반응 | +60점 | 2순위 |
+| **김 사원** | 정상 심박, 경로 유지, 반응 있음 | +0점 | 3순위 |
+    
+##### 주요 처리 단계
+1. 이상 징후 판단
+2. 위험 요소별 점수 계산
+   - 심박수 150bpms 초과 시 가중치 부여
+   - GPS 경로 이탈 시 가중치 부여
+   - 움직임 없음(무반응) 시 가중치 부여 
+3. 종합 위험도 산출 : 개별 점수 합산하여 총 위험도 계산
+4. 우선순위 정렬 및 전송 : 종합 점수 순으로 구조대 단말기에 리스트 전송
 
 
 ## 4. 작품 소개영상
 - 추후 추가 예정
 
 ## 5. 핵심 소스코드
-- 추후 추가 예정
+#### 5-1. 산악 안전 웨어려블 송신기 
+- 본 송신기 코드는 MAX30102·GPS 센서 데이터를 주기적으로 수집하여 LoRa 네트워크로 서버에 전송하며, SOS 버튼을 통해 긴급 구조 신호를 전송할 수 있도록 설계함
+##### 1. 센서 데이터 수집 (MAX30102 + GPS)
+```cpp
+void readSensors() {
+  for (byte i = 0; i < MY_BUFFER_SIZE; i++) {
+    while (!particleSensor.check()) {}
+    redBuffer[i] = particleSensor.getRed();
+    irBuffer[i] = particleSensor.getIR();
+  }
+
+  maxim_heart_rate_and_oxygen_saturation(
+    irBuffer, MY_BUFFER_SIZE, redBuffer,
+    &spo2, &validSpO2, &heartRate, &validHeartRate
+  );
+
+  if (!validHeartRate) heartRate = -1;
+  if (!validSpO2) spo2 = -1;
+}
+```
+##### 2. LoRa 데이터 전송
+- 수집한 데이터를 저전력 장거리 통신(LoRa)를 통하여 서버에 전송
+``` cpp
+bool sendDataViaLoRa(String payload) {
+  LoRa.beginPacket();
+  LoRa.print(payload);
+  return (LoRa.endPacket() == 0);
+}
+```
+##### 3. SOS 긴급 구조 요청
+- 사용자가 버튼을 3회 빠르게 눌러 긴급 구조 신호를 송신하는 부분
+``` cpp
+void triggerSOS() {
+  sosActive = true;
+  sosStartTime = millis();
+  sendSOSSignal();
+  displaySOS();
+}
+
+void sendSOSSignal() {
+  String payload = "SOS=1,Lat=" + String(gps.location.lat(), 6) +
+                   ",Lng=" + String(gps.location.lng(), 6);
+  LoRa.beginPacket();
+  LoRa.print(payload);
+  LoRa.endPacket();
+}
+```
+
+#### 5-2. 산악 안전 웨어려블 수신기
+- 송신기가 보낸 데이터를 수신기가 받아 데이터베이스에 저장하는 역할
+##### 1. LoRa 및 wi-fi 초기화
+- LoRa 수신기를 초기화하여 송신기로부터 데이터 패킷 수신
+- wi-fi 연결을 통해 서버와 통신 준비 완료
+``` cpp
+SPI.begin(5, 19, 27, LORA_SS);
+LoRa.setPins(LORA_SS, LORA_RST, LORA_DIO0);
+LoRa.begin(LORA_FREQ);
+
+WiFi.begin(ssid, password);
+while (WiFi.status() != WL_CONNECTED) delay(500);
+```
+##### 2. LoRa 패킷 수신 및 데이터 파싱
+- LoRa로 들어온 문자열 데이터를 수신
+``` cpp
+if (LoRa.parsePacket()) {
+  String incoming = "";
+  while (LoRa.available()) incoming += (char)LoRa.read();
+
+  int bpm, spo2;
+  float lat, lon;
+  sscanf(incoming.c_str(), "HR=%d,SpO2=%d,Lat=%f,Lon=%f", &bpm, &spo2, &lat, &lon);
+}
+
+```
+##### 3. DB 서버 전송
+- 수신 데이터를 JSON 형식으로 변환
+- 서버 측에서는 PostSQL DB에 사용자별 생체 및 위치 데이터를 저장
+``` cpp
+String jsonData = "{";
+jsonData += "\"user_id\":1,";
+jsonData += "\"latitude\":" + String(lat, 6) + ",";
+jsonData += "\"longitude\":" + String(lon, 6) + ",";
+jsonData += "\"bpm\":" + String(bpm) + ",";
+jsonData += "\"spo2\":" + String(spo2);
+jsonData += "}";
+
+HTTPClient http;
+http.begin(serverUrl);
+http.addHeader("Content-Type", "application/json");
+http.POST(jsonData);
+
+```
+
+#### 5-3. 수신한 데이터를 Flask 서버로 전송
+- wi-fi를 통해 FastAPI/Flask 서버와 통신하고 PostgreSQL로 업로드하는 중간 게이트웨이 역할
+##### 1. Wi-Fi 연결 및 OLED 상태 표시
+- 장치가 Wi-Fi 네트워크에 연결될 때까지 대기
+- OLED에 연결 상태와 IP 주소 표시
+```cpp
+WiFi.begin(ssid, password);
+while (WiFi.status() != WL_CONNECTED) {
+  delay(500);
+  Serial.print(".");
+}
+Serial.println("WiFi connected");
+u8g2.print("WiFi Connected!");
+```
+##### 2. JSON 데이터 생성 (센서 측정값 → 전송 포맷 변환)
+- Flask API 서버가 처리 가능한 포맷으로 구성
+``` cpp
+StaticJsonDocument<200> doc;
+doc["user_id"] = 1;
+doc["device_id"] = "TTGO_LORA32_TEST";
+doc["bpm"] = random(60, 100);
+doc["spo2"] = random(95, 100);
+doc["latitude"] = 37.5 + (random(-50, 50) / 1000.0);
+doc["longitude"] = 126.9 + (random(-50, 50) / 1000.0);
+
+String jsonString;
+serializeJson(doc, jsonString);
+```
+##### 3. 서버로 데이터 전송 (TCP 소켓 or HTTP POST)
+``` cpp
+if (client.connect(serverHost, serverPort)) {
+  client.println(jsonString);
+  Serial.println("Data sent!");
+} else {
+  Serial.println("Connection failed!");
+}
+```
+
