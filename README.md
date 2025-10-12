@@ -38,8 +38,9 @@
 - 활용 분야 : 산악, 캠핑 야외 활동 및 소방 시스템과 같은 재난 대응 등 다양한 구조 서비스로 확장 가능
 
 #### 1-6. 기술 스택
+//백엔드 기술 스택 FastAPI -> Flask로 수정했습니다! -by. 서현
 - 프론트엔드 : React
-- 백엔드 : Python(FastAPI), Node.js
+- 백엔드 : Python(Flask), Node.js
 - AI/ML : OpenAI API
 - 데이터베이스 : PostgreSQL, DBeaver
 - 클라우드 : NHN Cloud
@@ -65,14 +66,15 @@
 
 ## 🧩 3. 시스템 구성도
 #### 3-1. 서비스 구성도
-![service.png](https://github.com/S2ua4/geongangro/blob/main/readImage/service.png)
+//최신 구성도 이미지 업로드&수정했습니다! -by. 서현
+![service.png](https://github.com/S2ua4/geongangro/blob/main/readImage/service2.png)
 - front-end
 	- 사용자 앱 : 위치·건강 확인, 수동 구조 요청, 경고 수신
 	- Node-RED 대시보드 : 지도 기반 실시간 모니터링·마커 색상 변화
  	- 구조대 앱 : 구조 대상 위치·건강 확인, 우선순위 결과 수신
 - back-end
 	- 웨어러블로 위치·건강 데이터 주기적 수집
- 	- FireBase로 클라우드 연동
+ 	- Flask 기반 API서버로 클라우드 연동
 	- Node-RED로 분석 경고·구조 요청 처리
 	- PostgreSQL를 이용하여 산악 지역의 지역·위치 데이터를 저장 및 백업
 
@@ -83,7 +85,7 @@
 - 사용자 앱–관제실 서버–구조대 앱 간의 통신 과정을 LoRa·Wi-Fi 네트워크 기반으로 시각화한 서비스 아키텍쳐
 
 #### 3-3. 사용자 모바일 앱 메뉴 구성도
-![userMenu.jpg](https://github.com/S2ua4/geongangro/blob/main/readImage/secureMenu.jpg)
+![userMenu.jpg](https://github.com/S2ua4/geongangro/blob/main/readImage/userMenu.jpg)
 
 #### 3-4. 구조대 모바일 앱 메뉴 구성도
 ![secureMenu.jpg](https://github.com/S2ua4/geongangro/blob/main/readImage/userMenu.jpg)
@@ -184,8 +186,10 @@ http.POST(jsonData);
 
 ```
 
+//#### 5-2. 중계기?
+
 #### 5-3. 수신한 데이터를 Flask 서버로 전송
-- wi-fi를 통해 FastAPI/Flask 서버와 통신하고 PostgreSQL로 업로드하는 중간 게이트웨이 역할
+- wi-fi를 통해 Flask 서버와 통신하고 PostgreSQL로 업로드하는 중간 게이트웨이 역할
 ##### 1. Wi-Fi 연결 및 OLED 상태 표시
 - 장치가 Wi-Fi 네트워크에 연결될 때까지 대기
 - OLED에 연결 상태와 IP 주소 표시
