@@ -66,7 +66,7 @@
 
 ## 🧩 3. 시스템 구성도
 #### 3-1. 서비스 구성도
-//최신 구성도 이미지 업로드&수정했습니다! -by. 서현
+<!-- 최신 구성도 이미지 업로드&수정했습니다! -by. 서현 -->
 ![service.png](https://github.com/S2ua4/geongangro/blob/main/readImage/service2.png)
 - front-end
 	- 사용자 앱 : 위치·건강 확인, 수동 구조 요청, 경고 수신
@@ -79,7 +79,7 @@
 	- PostgreSQL를 이용하여 산악 지역의 지역·위치 데이터를 저장 및 백업
 
 #### 3-2. 기능 처리도 (기능 흐름도)
-// 이미지 하나 선택할 것!
+<!-- 이미지 하나 선택할 것! -->
 ![flowchart](https://github.com/S2ua4/geongangro/blob/main/readImage/flowchart.png)
 ![flowchart2](https://github.com/S2ua4/geongangro/blob/main/readImage/flowchart2.png)
 - 사용자 앱–관제실 서버–구조대 앱 간의 통신 과정을 LoRa·Wi-Fi 네트워크 기반으로 시각화한 서비스 아키텍쳐
