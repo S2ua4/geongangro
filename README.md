@@ -38,7 +38,7 @@
 - 활용 분야 : 산악, 캠핑 야외 활동 및 소방 시스템과 같은 재난 대응 등 다양한 구조 서비스로 확장 가능
 
 #### 1-6. 기술 스택
-//백엔드 기술 스택 FastAPI -> Flask로 수정했습니다! -by. 서현
+<!-- 백엔드 기술 스택 FastAPI -> Flask로 수정했습니다! -by. 서현 -->
 - 프론트엔드 : React
 - 백엔드 : Python(Flask), Node.js
 - AI/ML : OpenAI API
@@ -81,7 +81,7 @@
 #### 3-2. 기능 처리도 (기능 흐름도)
 <!-- 이미지 하나 선택할 것! -->
 ![flowchart](https://github.com/S2ua4/geongangro/blob/main/readImage/flowchart.png)
-![flowchart2](https://github.com/S2ua4/geongangro/blob/main/readImage/flowchart2.png)
+<!-- ![flowchart2](https://github.com/S2ua4/geongangro/blob/main/readImage/flowchart2.png) -->
 - 사용자 앱–관제실 서버–구조대 앱 간의 통신 과정을 LoRa·Wi-Fi 네트워크 기반으로 시각화한 서비스 아키텍쳐
 
 #### 3-3. 사용자 모바일 앱 메뉴 구성도
@@ -97,7 +97,7 @@
 - users Table
 ![userTable.jpg](https://github.com/S2ua4/geongangro/blob/main/readImage/userTable.jpg)
 - rescuer Table
-![rescuerTable](https://github.com/S2ua4/geongangro/blob/main/readImage/rescueTable.jpg)
+![rescuerTable.jpg](https://github.com/S2ua4/geongangro/blob/main/readImage/rescuerTable.jpg)
 - gpssLogs Table & healthLogs Table
 ![logsTalbe](https://github.com/S2ua4/geongangro/blob/main/readImage/logsTable.jpg)
 - Mountain_locations Table & bukhansan_trails Table 
