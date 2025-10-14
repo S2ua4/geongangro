@@ -126,7 +126,7 @@
 
 
 ## 4. 작품 소개영상
-- 추후 추가 예정
+[![[2025 한이음 드림업 공모전] 산악 안전을 위한 위치/건강 모니터링 및 긴급 구조 시스템 - 프로젝트 소개 영상](https://i9.ytimg.com/vi_webp/67kj4Bfilcw/mqdefault.webp?v=68eda575&sqp=COCCt8cG&rs=AOn4CLBWJMtC0PVxaeyaakqBJyEt7RIJxQ)](https://youtu.be/67kj4Bfilcw?si=imEq-6aMxHYZTWLK)
 
 ## 5. 핵심 소스코드
 #### 5-1. 산악 안전 웨어러블 송신기 
